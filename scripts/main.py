@@ -39,7 +39,9 @@ def init_game():
 
     chrono_clique_souris = ressource.Timer(0.5) # eviter les clics trop rapides et le spam lors du maintien de la souris
 
-    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague
+    menu_selection = False
+
+    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection
 
 def change_vague(vague, liste_flames, liste_ennemi_dead):
     """
@@ -51,7 +53,7 @@ def change_vague(vague, liste_flames, liste_ennemi_dead):
     liste_ennemi_dead = []
     return vague, liste_flames, liste_ennemi_dead, ennemi_max
 
-running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague = init_game()
+running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection = init_game()
 
 while running:
 
@@ -59,10 +61,12 @@ while running:
 
     liste_object = liste_tour + liste_flames
 
+    # spawn des ennemis
     if len(liste_flames) + len(liste_ennemi_dead) < ennemi_max:
         if chrono_spawn_ennemi.timer_ended():
             liste_flames.append(module_ennemi.create_flame(1, 50, 1, screen_height))
             chrono_spawn_ennemi.reset()
+    # changement de vague
     elif len(liste_ennemi_dead) >= ennemi_max:
         if len(liste_flames) == 0:
             vague, liste_flames, liste_ennemi_dead, ennemi_max = change_vague(vague, liste_flames, liste_ennemi_dead)
@@ -81,7 +85,15 @@ while running:
         if liste_flames[i].is_dead():
             liste_ennemi_dead.append(liste_flames.pop(i))
 
-    liste_tour, liste_object, chrono_clique_souris = module_tour.create_tour(liste_tour, liste_object, chrono_clique_souris)
+    # affiche le panneau de sélection de la tour a niveau de la souris. la tour choisie sera poser a l'emplacement du clic
+    if pygame.mouse.get_pressed()[0] and chrono_clique_souris.timer_ended():
+        chrono_clique_souris.reset()
+        x, y = pygame.mouse.get_pos()
+        menu_selection = True
+    
+    if menu_selection:
+        pass
+    #liste_tour, liste_object, chrono_clique_souris = module_tour.create_tour(liste_tour, liste_object, x, y)
 
     for tour in liste_tour:
         tour.shoot(liste_flames)

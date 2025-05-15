@@ -1,6 +1,4 @@
 import pygame
-import math
-import random
 import os
 
 import ressource
@@ -32,18 +30,13 @@ class Camion:
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
-def create_tour(liste_tour, liste_object, chrono_clique_souris):
+def create_tour(liste_tour, liste_object, x, y):
     """
     Crée une nouvelle tour à la position (x, y) et l'ajoute à la liste des tours.
     """
-    x = pygame.mouse.get_pos()[0]
-    y = pygame.mouse.get_pos()[1]
-    
-    if pygame.mouse.get_pressed()[0] and chrono_clique_souris.timer_ended():
-        new_tour = Camion(x, y, 100)
-        liste_tour.append(new_tour)
-        liste_object.append(new_tour)
-        chrono_clique_souris.reset()
+    new_tour = Camion(x, y, 100)
+    liste_tour.append(new_tour)
+    liste_object.append(new_tour)
 
     return liste_tour, liste_object, chrono_clique_souris
 
