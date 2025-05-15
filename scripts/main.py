@@ -32,16 +32,26 @@ def init_game():
     vague = 0
     ennemi_max = 10 + 2 * vague
     liste_ennemi_dead = []
-    chrono_spawn_ennemi = ressource.Timer(1) # timer pour le spawn des ennemis
+    chrono_spawn_ennemi = ressource.Timer(0.8) # timer pour le spawn des ennemis
 
     liste_tour = []
     liste_object = liste_tour + liste_flames
 
     chrono_clique_souris = ressource.Timer(0.5) # eviter les clics trop rapides et le spam lors du maintien de la souris
 
-    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi
+    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague
 
-running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi = init_game()
+def change_vague(vague, liste_flames, liste_ennemi_dead):
+    """
+    Change la vague d'ennemis
+    """
+    vague += 1
+    ennemi_max = 10 + 2 * vague
+    liste_flames = []
+    liste_ennemi_dead = []
+    return vague, liste_flames, liste_ennemi_dead, ennemi_max
+
+running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague = init_game()
 
 while running:
 
@@ -53,8 +63,12 @@ while running:
         if chrono_spawn_ennemi.timer_ended():
             liste_flames.append(module_ennemi.create_flame(1, 50, 1, screen_height))
             chrono_spawn_ennemi.reset()
+    elif len(liste_ennemi_dead) >= ennemi_max:
+        if len(liste_flames) == 0:
+            vague, liste_flames, liste_ennemi_dead, ennemi_max = change_vague(vague, liste_flames, liste_ennemi_dead)
+            chrono_spawn_ennemi.reset()
 
-
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
