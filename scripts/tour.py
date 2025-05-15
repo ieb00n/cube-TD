@@ -38,7 +38,7 @@ def create_tour(liste_tour, liste_object, x, y):
     liste_tour.append(new_tour)
     liste_object.append(new_tour)
 
-    return liste_tour, liste_object, chrono_clique_souris
+    return liste_tour, liste_object
 
 def remove_tour(liste_tour, liste_object, tour_indice):
     """
