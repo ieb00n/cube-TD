@@ -5,10 +5,11 @@ import random
 import ressource
 
 class Road_part:
-    def __init__(self, x, y, cote, image, number):
+    def __init__(self, x, y, cote, image, number, direction):
         self.cote = cote
         self.x = x
         self.y = y
+        self.direction = direction
         self.number = number
         image = pygame.image.load(image)
         self.image = pygame.transform.scale(image, (self.cote, self.cote)).convert_alpha()
@@ -16,7 +17,7 @@ class Road_part:
 
 
     def get_info(self):
-        return [self.x, self.y, self.width, self.height]
+        return [self.x, self.y, self.cote ,self.direction]
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
@@ -39,7 +40,7 @@ def create_road(screen_width, screen_height):
 
     # Ajout des deux premières routes horizontales
     for i in range(2):
-        route.append(Road_part(position_x, position_y, cote, os.path.join("images", "sprite", "road1.png"), number))
+        route.append(Road_part(position_x, position_y, cote, os.path.join("images", "sprite", "road", "road1.png"), number, 0))
         number += 1
         longueur_x_route += 1
         position_x = cote
@@ -75,9 +76,9 @@ def create_road(screen_width, screen_height):
 
         # Ajouter la nouvelle partie de route
         if longueur_x_route == 20:
-            route.append(Road_part(position_x, position_y, cote, os.path.join("images", "sprite", "last_road.png"), number))
+            route.append(Road_part(position_x, position_y, cote, os.path.join("images", "sprite", "road", "last_road.png"), number, direction))
         else:
-            route.append(Road_part(position_x, position_y, cote, os.path.join("images", "sprite", "road1.png"), number))
+            route.append(Road_part(position_x, position_y, cote, os.path.join("images", "sprite", "road", "road1.png"), number, direction))
         number += 1
 
     return route

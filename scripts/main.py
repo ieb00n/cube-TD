@@ -1,8 +1,10 @@
 import pygame
 import random
+import time
 
 import road
 import ressource
+import ennemi
 
 pygame.init()
 
@@ -20,12 +22,18 @@ clock = pygame.time.Clock()
 dt = clock.tick(framerate)
 
 def init_game():
+    
     running = True
-    return running
+    
+    route = road.create_road(screen_width, screen_height)
 
-running = init_game()
+    flames = [ennemi.create_flame(1, 50, 1, screen_height)]
+    vague = 0
 
-route = road.create_road(screen_width, screen_height)
+
+    return running, route, flames
+
+running, route, flames = init_game()
 
 while running:
 
@@ -40,15 +48,24 @@ while running:
             if event.key == pygame.K_TAB:  # Vérifie si la touche pressée est "Tab"
                 running = False
 
+    for flame in flames:
+        flame.move(route)
+        if flame.is_dead():
+            flames.remove(flame)
 
 
     # DRAW
     
+
+
     # affiche l'ecran en vert
     screen.fill((0, 255, 0))
 
     for road in route:
         road.draw(screen)
+
+    for flame in flames:
+        flame.draw(screen)
 
     # Rafraichissement de l'écran
     pygame.display.flip()
