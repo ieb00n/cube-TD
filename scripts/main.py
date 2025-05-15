@@ -2,9 +2,10 @@ import pygame
 import random
 import time
 
-import road
+import road as module_road
 import ressource
-import ennemi
+import ennemi as module_ennemi
+import tour as module_tour
 
 pygame.init()
 
@@ -25,20 +26,33 @@ def init_game():
     
     running = True
     
-    route = road.create_road(screen_width, screen_height)
+    route = module_road.create_road(screen_width, screen_height)
 
-    flames = [ennemi.create_flame(1, 50, 1, screen_height)]
+    liste_flames = [module_ennemi.create_flame(1, 50, 1, screen_height)]
     vague = 0
+    ennemi_max = 10 + 2 * vague
+    liste_ennemi_dead = []
+    chrono_spawn_ennemi = ressource.Timer(1) # timer pour le spawn des ennemis
 
+    liste_tour = []
+    liste_object = liste_tour + liste_flames
 
-    return running, route, flames
+    chrono_clique_souris = ressource.Timer(0.5) # eviter les clics trop rapides et le spam lors du maintien de la souris
 
-running, route, flames = init_game()
+    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi
+
+running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi = init_game()
 
 while running:
 
     # UPDATE
 
+    liste_object = liste_tour + liste_flames
+
+    if len(liste_flames) + len(liste_ennemi_dead) < ennemi_max:
+        if chrono_spawn_ennemi.timer_ended():
+            liste_flames.append(module_ennemi.create_flame(1, 50, 1, screen_height))
+            chrono_spawn_ennemi.reset()
 
 
     for event in pygame.event.get():
@@ -48,10 +62,15 @@ while running:
             if event.key == pygame.K_TAB:  # Vérifie si la touche pressée est "Tab"
                 running = False
 
-    for flame in flames:
-        flame.move(route)
-        if flame.is_dead():
-            flames.remove(flame)
+    for i in range(len(liste_flames)-1, -1, -1):
+        liste_flames[i].move(route)
+        if liste_flames[i].is_dead():
+            liste_ennemi_dead.append(liste_flames.pop(i))
+
+    liste_tour, liste_object, chrono_clique_souris = module_tour.create_tour(liste_tour, liste_object, chrono_clique_souris)
+
+    for tour in liste_tour:
+        tour.shoot(liste_flames)
 
 
     # DRAW
@@ -64,8 +83,8 @@ while running:
     for road in route:
         road.draw(screen)
 
-    for flame in flames:
-        flame.draw(screen)
+    for objects in liste_object:
+        objects.draw(screen)
 
     # Rafraichissement de l'écran
     pygame.display.flip()

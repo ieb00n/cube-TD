@@ -14,30 +14,6 @@ class Flame:
         self.mort = False
         self.route = 0
         self.route_suivante = self.route + 1
-    
-    def calc_position(self, route):
-        # Vérifie si la flamme a atteint la fin de la route
-        if self.route_suivante >= len(route):
-            self.mort = True
-            return
-
-        # Récupère les informations sur la route actuelle et la suivante
-        current_route = route[self.route]
-        next_route = route[self.route_suivante]
-
-        # Vérifie si la flamme a atteint la prochaine route
-        if current_route.get_info()[3] == 0:  # Direction droite
-            if self.x >= next_route.get_info()[0]:
-                self.route += 1
-                self.route_suivante += 1
-        elif current_route.get_info()[3] == 1:  # Direction haut
-            if self.y <= next_route.get_info()[1]:
-                self.route += 1
-                self.route_suivante += 1
-        elif current_route.get_info()[3] == 2:  # Direction bas
-            if self.y >= next_route.get_info()[1]:
-                self.route += 1
-                self.route_suivante += 1
 
     def move(self, route):
         if self.mort:
@@ -72,6 +48,11 @@ class Flame:
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
+    
+    def take_damage(self, damage):
+        self.vie -= damage
+        if self.vie <= 0:
+            self.mort = True
 
     def is_dead(self):
         return self.mort

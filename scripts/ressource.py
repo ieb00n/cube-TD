@@ -22,3 +22,12 @@ class Timer:
             return True
         else:
             return False
+        
+    def reset(self):
+        """ Réinitialise le timer """
+        self.temps_initial = pygame.time.get_ticks() / 1000  # Convertir en secondes
+        self.temps_actuel = pygame.time.get_ticks() / 1000  # Convertir en secondes
+
+def calc_distance(x1, y1, x2, y2):
+    """ Calcule la distance entre deux points """
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
