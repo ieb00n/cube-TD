@@ -1,11 +1,13 @@
 import pygame
 import random
 import time
+import os
 
 import road as module_road
 import ressource
 import ennemi as module_ennemi
 import tour as module_tour
+import icons as module_icons
 
 pygame.init()
 
@@ -41,7 +43,9 @@ def init_game():
 
     menu_selection = False
 
-    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection
+    liste_icone = []
+
+    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection, liste_icone
 
 def change_vague(vague, liste_flames, liste_ennemi_dead):
     """
@@ -53,13 +57,13 @@ def change_vague(vague, liste_flames, liste_ennemi_dead):
     liste_ennemi_dead = []
     return vague, liste_flames, liste_ennemi_dead, ennemi_max
 
-running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection = init_game()
+running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection, liste_icone = init_game()
 
 while running:
 
     # UPDATE
 
-    liste_object = liste_tour + liste_flames
+    liste_object = liste_tour + liste_flames + liste_icone
 
     # spawn des ennemis
     if len(liste_flames) + len(liste_ennemi_dead) < ennemi_max:
@@ -87,13 +91,27 @@ while running:
 
     # affiche le panneau de sélection de la tour a niveau de la souris. la tour choisie sera poser a l'emplacement du clic
     if pygame.mouse.get_pressed()[0] and chrono_clique_souris.timer_ended():
-        chrono_clique_souris.reset()
-        x, y = pygame.mouse.get_pos()
-        menu_selection = True
-    
+        if not menu_selection:
+            chrono_clique_souris.reset()
+            position_x, position_y = pygame.mouse.get_pos()
+            menu_selection = True
+            liste_icone = [module_icons.Icone(position_x, position_y, os.path.join("images", "icone", "pompier icone.png") , module_tour.Camion, "Camion de base")] # TODO : pour les prochaine icones, ne pas oublier d'augmenter la valeur de x et/ou y
+
+
+    # toute les icones de selection de tour
     if menu_selection:
-        pass
-    #liste_tour, liste_object, chrono_clique_souris = module_tour.create_tour(liste_tour, liste_object, x, y)
+        for icone in liste_icone:
+            icone.draw(screen)
+            if chrono_clique_souris.timer_ended():
+                if icone.is_pressed(position_x, position_y):
+                    # si l'icone est pressée, on crée la tour
+                    liste_tour, liste_object = module_tour.create_tour(icone.return_tour(), liste_tour, liste_object, position_x, position_y)
+                    menu_selection = False
+                    
+                    # TODO : ne pas oublier de supprimer l'icone
+                    liste_icone = []
+                    chrono_clique_souris.reset()
+                    break
 
     for tour in liste_tour:
         tour.shoot(liste_flames)
@@ -101,11 +119,10 @@ while running:
 
     # DRAW
     
-
-
     # affiche l'ecran en vert
     screen.fill((0, 255, 0))
 
+    
     for road in route:
         road.draw(screen)
 

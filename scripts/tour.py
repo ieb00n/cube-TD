@@ -3,6 +3,10 @@ import os
 
 import ressource
 
+class Tour:
+    def __init__(self, x, y, cote):
+        pass
+
 class Camion:
     def __init__(self, x, y, cote):
         self.x = x - cote / 2
@@ -30,11 +34,13 @@ class Camion:
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
-def create_tour(liste_tour, liste_object, x, y):
+# TODO : ne pas oublier de faire les icones de ces tours
+
+def create_tour(type_de_tour, liste_tour, liste_object, x, y):
     """
     Crée une nouvelle tour à la position (x, y) et l'ajoute à la liste des tours.
     """
-    new_tour = Camion(x, y, 100)
+    new_tour = type_de_tour(x, y, 100)
     liste_tour.append(new_tour)
     liste_object.append(new_tour)
 
