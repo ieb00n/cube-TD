@@ -35,4 +35,5 @@ class Icone:
     def draw(self, screen):
         # dessine un carre orange plein avec les bord arondis derrière l'icone
         pygame.draw.rect(screen, (255, 165, 0), (self.x, self.y, self.cote, self.cote), border_radius=10)
+        pygame.draw.rect(screen, (0, 0, 0), (self.x, self.y, self.cote, self.cote), 2, border_radius=10)
         screen.blit(self.image, (self.x, self.y))

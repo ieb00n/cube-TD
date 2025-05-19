@@ -45,7 +45,9 @@ def init_game():
 
     liste_icone = []
 
-    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection, liste_icone
+    argent = 100
+
+    return running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection, liste_icone, argent
 
 def change_vague(vague, liste_flames, liste_ennemi_dead):
     """
@@ -57,7 +59,7 @@ def change_vague(vague, liste_flames, liste_ennemi_dead):
     liste_ennemi_dead = []
     return vague, liste_flames, liste_ennemi_dead, ennemi_max
 
-running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection, liste_icone = init_game()
+running, route, liste_flames, liste_tour, liste_object, chrono_clique_souris, ennemi_max, liste_ennemi_dead, chrono_spawn_ennemi, vague, menu_selection, liste_icone, argent = init_game()
 
 while running:
 
