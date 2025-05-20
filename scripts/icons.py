@@ -25,11 +25,11 @@ class Icone:
         """
         return self.class_tour
     
-    def is_pressed(self, souris_x, souris_y):
+    def is_pressed(self):
         """
         Vérifie si l'icone est pressée
         """
-        if self.x <= souris_x <= self.x + self.cote and self.y <= souris_y <= self.y + self.cote and pygame.mouse.get_pressed()[0]:
+        if self.x <= pygame.mouse.get_pos()[0] <= self.x + self.cote and self.y <= pygame.mouse.get_pos()[1] <= self.y + self.cote and pygame.mouse.get_pressed()[0]:
             return True
     
     def draw(self, screen):

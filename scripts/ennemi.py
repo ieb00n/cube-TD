@@ -15,6 +15,9 @@ class Flame:
         self.route = 0
         self.route_suivante = self.route + 1
 
+    def get_info(self):
+        return (self.x, self.y, self.vie, self.speed, self.route)
+
     def move(self, route):
         if self.mort:
             return

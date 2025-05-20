@@ -70,7 +70,7 @@ while running:
     # spawn des ennemis
     if len(liste_flames) + len(liste_ennemi_dead) < ennemi_max:
         if chrono_spawn_ennemi.timer_ended():
-            liste_flames.append(module_ennemi.create_flame(1, 50, 1, screen_height))
+            liste_flames.append(module_ennemi.create_flame(1, 50, random.randint(1, 2), screen_height))
             chrono_spawn_ennemi.reset()
     # changement de vague
     elif len(liste_ennemi_dead) >= ennemi_max:
@@ -97,6 +97,8 @@ while running:
             chrono_clique_souris.reset()
             position_x, position_y = pygame.mouse.get_pos()
             menu_selection = True
+            for tour in liste_tour:
+                tour.unselect()
             liste_icone = [module_icons.Icone(position_x, position_y, os.path.join("images", "icone", "pompier icone.png") , module_tour.Camion, "Camion de base")] # TODO : pour les prochaine icones, ne pas oublier d'augmenter la valeur de x et/ou y
 
 
@@ -105,7 +107,7 @@ while running:
         for icone in liste_icone:
             icone.draw(screen)
             if chrono_clique_souris.timer_ended():
-                if icone.is_pressed(position_x, position_y):
+                if icone.is_pressed():
                     # si l'icone est pressée, on crée la tour
                     liste_tour, liste_object = module_tour.create_tour(icone.return_tour(), liste_tour, liste_object, position_x, position_y)
                     menu_selection = False
@@ -114,6 +116,21 @@ while running:
                     liste_icone = []
                     chrono_clique_souris.reset()
                     break
+        # si on clique ailleur ca ferme le menu
+        if chrono_clique_souris.timer_ended():
+            if pygame.mouse.get_pressed()[0]:
+                menu_selection = False
+                liste_icone = []
+                chrono_clique_souris.reset()
+                for tour in liste_tour:
+                    tour.unselect()
+
+    for tour in liste_tour:
+        if pygame.mouse.get_pressed()[2] and chrono_clique_souris.timer_ended():
+            if tour.is_selected():
+                menu_selection = False
+                liste_icone = []
+                chrono_clique_souris.reset()
 
     for tour in liste_tour:
         tour.shoot(liste_flames)
